@@ -14,8 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+//import Keycloak from './node_modules/keycloak-js/dist/keycloak-js/dist/keycloak.js' assert { type: 'json' };
+
 var keycloak = new Keycloak();
 var token = '';
+
+try {
+   const authenticated = keycloak.init({
+      onLoad: 'check-sso',
+    silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html',
+   enableLogging: true });
+   console.log("Init: " + keycloak.authenticated);
+} catch (error) {
+    console.error('Failed to initialize adapter:', error);
+}
 
 function notAuthenticated() {
     document.getElementById('not-authenticated').style.display = 'block';
@@ -32,6 +44,9 @@ function request(endpoint) {
     var req = function() {
         var req = new XMLHttpRequest();
         var output = document.getElementById('message');
+ console.log("Token: " + keycloak.token);
+ console.log("Authenticated: " + keycloak.authenticated);
+ console.log("Endpoint: " + endpoint);
         req.open('GET', '/' + endpoint, true);
 
         if (keycloak.authenticated) {
@@ -40,6 +55,8 @@ function request(endpoint) {
         } else if(token != "") {
             req.setRequestHeader('Authorization', 'Bearer ' + token)
             console.log("Unauthenticated request.");
+        } else {
+        console.log("Failed to set Auth Bearer token");
         }
 
         req.onreadystatechange = function () {
@@ -64,32 +81,26 @@ function request(endpoint) {
     }
 }
 
-keycloak.init({ 
-//     onLoad: 'check-sso',
-// silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html',
-  enableLogging: true }).then(function () {
-    if (keycloak.authenticated) {
-        authenticated();
-        console.log("Token: " + keycloak.token);
-        token = keycloak.token;
-console.log("Authenticated: " + keycloak.authenticated);
-
-    } else {
-        notAuthenticated();
-    }
-
-    document.body.style.display = 'block';
-});
 // window.onload = function () {
+// keycloak.init({ 
+     // onLoad: 'check-sso',
+   // silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html',
+  // enableLogging: true }).then(function () {
+    // console.log("init keycloak");
+    // if (keycloak.authenticated) {
+        // authenticated();
+        // console.log("Token: " + keycloak.token);
+        // token = keycloak.token;
+// console.log("Authenticated: " + keycloak.authenticated);
+// 
+    // } else {
+        // console.log("Authenticated failed");
+        // notAuthenticated();
+    // }
+// 
+    // document.body.style.display = 'block';
+//});
 // }
 
 // keycloak.onAuthLogout = notAuthenticated;
 
-// keycloak.init({ onLoad: 'check-sso',
-//  silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html',
-//   enableLogging: true });
-// //   .then(authenticated => {
-// //     alert(authenticated ? 'authenticated' : 'not authenticated');
-// // }).catch(error => alert(error));
-// console.log("Token: " + keycloak.token);
-// console.log("Authenticated: " + keycloak.authenticated);

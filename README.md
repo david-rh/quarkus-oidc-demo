@@ -1,4 +1,4 @@
-# security-openid-connect-quickstart
+# Quarkus Keycloak Demo
 
 This project uses Quarkus, the Supersonic Subatomic Java Framework.
 

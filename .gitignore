@@ -1,3 +1,6 @@
+src/main/resources/META-INF/resources/*
+src/main/webapp/public/keycloak.json
+
 #Maven
 target/
 pom.xml.tag
