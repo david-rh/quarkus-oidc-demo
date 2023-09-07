@@ -1,6 +1,6 @@
 import Keycloak from "keycloak-js";
 
-const _kc = new Keycloak('/keycloak.json');
+const _kc = new Keycloak('/api/keycloak');
 
 /**
  * Initializes Keycloak instance and calls the provided callback function if successfully authenticated.
